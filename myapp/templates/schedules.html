@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">Графики</h1>
+  <!-- Форма назначения на смену -->
+  <h2 class="text-xl font-semibold mb-2">Назначение на смену</h2>
+  <form method="post" class="bg-white p-4 rounded shadow max-w-lg mb-6">
+    {% csrf_token %}
+    <!-- поля: project, employee, shift, start_date, end_date -->
+    <!-- ... аналогично, как выше: выпадающие списки для project и employee ... -->
+    <div class="mb-3">
+      <label class="block font-medium mb-1">Смена:</label>
+      <select name="shift" class="w-full border px-2 py-1">
+        <option value="Дневная">Дневная</option>
+        <option value="Ночная">Ночная</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="block font-medium mb-1">Период:</label>
+      <input type="date" name="start_date" class="border px-2 py-1" required>
+      –
+      <input type="date" name="end_date" class="border px-2 py-1" required>
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Добавить</button>
+  </form>
+  <!-- Форма графика работ -->
+  <h2 class="text-xl font-semibold mb-2">График работ</h2>
+  <form method="post" class="bg-white p-4 rounded shadow max-w-lg">
+    {% csrf_token %}
+    <!-- поля: project, work_type, start_date, end_date -->
+    <div class="mb-3">
+      <label class="block font-medium mb-1">Объект:</label>
+      <select name="project" class="w-full border px-2 py-1">
+        {% for proj in projects %}<option value="{{ proj.id }}">{{ proj.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="block font-medium mb-1">Вид работ:</label>
+      <input type="text" name="work_type" class="w-full border px-2 py-1" placeholder="Тип или название работы" required>
+    </div>
+    <div class="mb-3">
+      <label class="block font-medium mb-1">Сроки:</label>
+      <input type="date" name="start_date" class="border px-2 py-1" required>
+      –
+      <input type="date" name="end_date" class="border px-2 py-1" required>
+    </div>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Добавить</button>
+  </form>
+{% endblock %}

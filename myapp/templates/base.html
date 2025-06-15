@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind CSS через CDN -->
+  <title>Строительная отчётность</title>
+</head>
+<body class="bg-gray-100">
+  <!-- Навигационное меню -->
+  <nav class="bg-white shadow mb-4">
+    <div class="max-w-4xl mx-auto px-4 py-2 flex space-x-4">
+      <a href="{% url 'reporting' %}" class="{% if request.path == '/' %}text-blue-600{% endif %}">Отчётность</a>
+      <a href="{% url 'schedules' %}" class="{% if request.path == '/schedules/' %}text-blue-600{% endif %}">Графики</a>
+      <a href="{% url 'finances' %}" class="{% if request.path == '/finances/' %}text-blue-600{% endif %}">Финансы</a>
+      <a href="{% url 'tools' %}" class="{% if request.path == '/tools/' %}text-blue-600{% endif %}">Инструменты</a>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Скрипт авторизации Telegram (см. описание в разделе интеграции) -->
+  <script>
+    const tg = window.Telegram.WebApp;
+    if (tg.initDataUnsafe && !tg.initDataUnsafe.user) {
+      // Если вдруг нет данных пользователя, закрываем WebApp
+      tg.close();
+    }
+    // Иначе — можно настроить тему в соответствии с Telegram
+    document.body.style.backgroundColor = tg.themeParams.bg_color || "#F5F5F5";
+  </script>
+</body>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</html>

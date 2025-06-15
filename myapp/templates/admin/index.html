@@ -1,0 +1,76 @@
+{% extends "unfold/layouts/base_simple.html" %}
+{% load i18n unfold %}
+
+{% block title %}
+  {% trans "Панель управления" %} | {{ site_title|default:_("Админка") }}
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+  {# --- KPI-карточки --- #}
+  {% component "unfold/components/flex.html" with class="gap-6 lg:gap-8 mb-8" %}
+    {% component "unfold/components/card.html" %}
+      {% component "unfold/components/text.html" %}
+        {% trans "Объектов" %}
+      {% endcomponent %}
+      {% component "unfold/components/title.html" %}
+        {{ stats.total_projects }}
+      {% endcomponent %}
+    {% endcomponent %}
+
+    {% component "unfold/components/card.html" %}
+      {% component "unfold/components/text.html" %}
+        {% trans "Выработка (всего)" %}
+      {% endcomponent %}
+      {% component "unfold/components/title.html" %}
+        {{ stats.total_output }}
+      {% endcomponent %}
+    {% endcomponent %}
+
+    {% component "unfold/components/card.html" %}
+      {% component "unfold/components/text.html" %}
+        {% trans "Расходы (всего)" %}
+      {% endcomponent %}
+      {% component "unfold/components/title.html" %}
+        {{ stats.total_expenses }}
+      {% endcomponent %}
+    {% endcomponent %}
+
+    {% component "unfold/components/card.html" %}
+      {% component "unfold/components/text.html" %}
+        {% trans "Активные назначения" %}
+      {% endcomponent %}
+      {% component "unfold/components/title.html" %}
+        {{ stats.active_assignments }}
+      {% endcomponent %}
+    {% endcomponent %}
+
+    {% component "unfold/components/card.html" %}
+      {% component "unfold/components/text.html" %}
+        {% trans "Отсутствующие инструменты" %}
+      {% endcomponent %}
+      {% component "unfold/components/title.html" %}
+        {{ stats.missing_tools }}
+      {% endcomponent %}
+    {% endcomponent %}
+  {% endcomponent %}
+
+  {# --- Линейный график выработки --- #}
+  {% component "unfold/components/card.html" with class="mb-8" %}
+    {% component "unfold/components/text.html" %}
+      {% trans "Выработка за последние 7 дней" %}
+    {% endcomponent %}
+    {% component "unfold/components/chart/line.html" with data=chart_output_data height=200 width=600 %}
+    {% endcomponent %}
+  {% endcomponent %}
+
+  {# --- Столбчатая диаграмма затрат --- #}
+  {% component "unfold/components/card.html" %}
+    {% component "unfold/components/text.html" %}
+      {% trans "Затраты за последние 7 дней" %}
+    {% endcomponent %}
+    {% component "unfold/components/chart/bar.html" with data=chart_expense_data height=200 width=600 %}
+    {% endcomponent %}
+  {% endcomponent %}
+{% endblock %}

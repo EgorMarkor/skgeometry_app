@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="text-2xl font-bold mb-6">Инструменты</h1>
+  <div class="bg-white p-6 rounded-lg shadow mb-8">
+    <!-- Форма добавления/обновления -->
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block font-medium mb-1">Объект</label>
+        <select name="project" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled selected>Выберите объект</option>
+          {% for proj in projects %}
+            <option value="{{ proj.id }}">{{ proj.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block font-medium mb-1">Название инструмента</label>
+        <input type="text" name="name" required
+               class="w-full border rounded px-3 py-2"
+               placeholder="Например, Лопата">
+      </div>
+      <div>
+        <label class="block font-medium mb-1">Статус</label>
+        <select name="status" required class="w-full border rounded px-3 py-2">
+          <option value="present">В наличии</option>
+          <option value="absent">Отсутствует</option>
+        </select>
+      </div>
+      <button type="submit"
+              class="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700">
+        Сохранить инструмент
+      </button>
+    </form>
+  </div>
+
+  <!-- Таблица инструментов -->
+  <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <h2 class="text-xl font-semibold px-6 py-4 border-b">Список инструментов</h2>
+    <table class="min-w-full">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Объект</th>
+          <th class="px-4 py-2 text-left">Инструмент</th>
+          <th class="px-4 py-2 text-left">Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tool in tools %}
+        <tr class="border-t">
+          <td class="px-4 py-2">{{ tool.project.name }}</td>
+          <td class="px-4 py-2">{{ tool.name }}</td>
+          <td class="px-4 py-2">
+            {% if tool.status == 'present' %}
+              <span class="text-green-600 font-medium">В наличии</span>
+            {% else %}
+              <span class="text-red-600 font-medium">Отсутствует</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="px-4 py-2 text-center text-gray-500">Нет инструментов</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

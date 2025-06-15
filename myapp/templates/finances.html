@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="text-2xl font-bold mb-6">Финансы</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <!-- Форма: Новый расход -->
+    <form method="post" class="bg-white p-6 rounded-lg shadow">
+      {% csrf_token %}
+      <h2 class="text-xl font-semibold mb-4">Новая статья расхода</h2>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Объект</label>
+        <select name="project" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled selected>Выберите объект</option>
+          {% for proj in projects %}
+            <option value="{{ proj.id }}">{{ proj.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Статья расхода</label>
+        <input type="text" name="category" required
+               class="w-full border rounded px-3 py-2"
+               placeholder="Например, Бетон, Аренда...">
+      </div>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Сумма (₽)</label>
+        <input type="number" name="amount" step="0.01" required
+               class="w-full border rounded px-3 py-2">
+      </div>
+      <div class="mb-6">
+        <label class="block font-medium mb-1">Дата</label>
+        <input type="date" name="date" required
+               class="w-full border rounded px-3 py-2">
+      </div>
+      <button type="submit"
+              class="w-full bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700">
+        Сохранить расход
+      </button>
+    </form>
+
+    <!-- Форма: Доход/Расход -->
+    <form method="post" class="bg-white p-6 rounded-lg shadow">
+      {% csrf_token %}
+      <h2 class="text-xl font-semibold mb-4">Финансовая операция</h2>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Объект</label>
+        <select name="project" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled selected>Выберите объект</option>
+          {% for proj in projects %}
+            <option value="{{ proj.id }}">{{ proj.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Тип операции</label>
+        <select name="record_type" required class="w-full border rounded px-3 py-2">
+          <option value="income">Доход</option>
+          <option value="expense">Расход</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block font-medium mb-1">Сумма (₽)</label>
+        <input type="number" name="amount" step="0.01" required
+               class="w-full border rounded px-3 py-2">
+      </div>
+      <div class="mb-6">
+        <label class="block font-medium mb-1">Дата</label>
+        <input type="date" name="date" required
+               class="w-full border rounded px-3 py-2">
+      </div>
+      <button type="submit"
+              class="w-full bg-green-600 text-white font-semibold py-2 rounded hover:bg-green-700">
+        Сохранить запись
+      </button>
+    </form>
+  </div>
+
+  <!-- Таблица расходов -->
+  <div class="bg-white rounded-lg shadow mb-8 overflow-x-auto">
+    <h2 class="text-xl font-semibold px-6 py-4 border-b">Последние расходы</h2>
+    <table class="min-w-full">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Дата</th>
+          <th class="px-4 py-2 text-left">Объект</th>
+          <th class="px-4 py-2 text-left">Статья</th>
+          <th class="px-4 py-2 text-right">Сумма</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for exp in expenses %}
+        <tr class="border-t">
+          <td class="px-4 py-2">{{ exp.date }}</td>
+          <td class="px-4 py-2">{{ exp.project.name }}</td>
+          <td class="px-4 py-2">{{ exp.category }}</td>
+          <td class="px-4 py-2 text-right">{{ exp.amount }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="px-4 py-2 text-center text-gray-500">Нет данных</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Таблица финансовых операций -->
+  <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <h2 class="text-xl font-semibold px-6 py-4 border-b">Последние финансовые операции</h2>
+    <table class="min-w-full">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left">Дата</th>
+          <th class="px-4 py-2 text-left">Объект</th>
+          <th class="px-4 py-2 text-left">Тип</th>
+          <th class="px-4 py-2 text-right">Сумма</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rec in records %}
+        <tr class="border-t">
+          <td class="px-4 py-2">{{ rec.date }}</td>
+          <td class="px-4 py-2">{{ rec.project.name }}</td>
+          <td class="px-4 py-2">
+            {% if rec.record_type == 'income' %}Доход{% else %}Расход{% endif %}
+          </td>
+          <td class="px-4 py-2 text-right">{{ rec.amount }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="px-4 py-2 text-center text-gray-500">Нет данных</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
